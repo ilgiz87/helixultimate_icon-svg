@@ -1,4 +1,4 @@
-# SVG иконки в место Font Awesome
+# SVG иконки в место Font Awesome для шаблона Helix Ultimate
 
 Модифицированный код, который заменяет Font Awesome на встроенные SVG из папки svg-icons вашего шаблона
 ## Как использовать:
