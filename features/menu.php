@@ -6,11 +6,13 @@
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 or Later
  */
 defined('_JEXEC') or die();
+
 use HelixUltimate\Framework\Core\Classes\HelixultimateMenu;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Helper\ModuleHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Helix Ultimate Menu class
@@ -98,35 +100,31 @@ class HelixUltimateFeatureMenu
     {
         $user = Factory::getUser();
         $html = [];
-
-        // Путь к папке с SVG-иконками
-        $svgIconsPath = JPATH_THEMES . '/shaper_helixultimate/svg-icons/';
-        $svgBaseUrl = JUri::base(true) . '/templates/shaper_helixultimate/svg-icons/';
+        $template = Factory::getApplication()->getTemplate();
+        $svgIconsPath = JPATH_THEMES . '/' . $template . '/svg-icons/';
 
         $html[] = '<div class="sp-module">';
 
         if ($user->id === 0)
         {
-            // Загрузка SVG для иконки входа (например, user.svg)
             $signInIcon = file_exists($svgIconsPath . 'user.svg') 
                 ? $this->addSvgAttributes(file_get_contents($svgIconsPath . 'user.svg')) 
                 : '<span class="icon-placeholder">User Icon</span>';
 
             $html[] = '<a class="sp-sign-in" href="' . Route::_('index.php?option=com_users&view=login') . '">';
-            $html[] = $signInIcon; // Вставка SVG
+            $html[] = $signInIcon;
             $html[] = '<span class="signin-text d-none d-lg-inline-block">' . Text::_('HELIX_ULTIMATE_SIGN_IN_MENU') . '</span>';
             $html[] = '</a>';
         }
         else
         {
-            // Загрузка SVG для профиля пользователя (например, profile.svg)
             $profileIcon = file_exists($svgIconsPath . 'profile.svg') 
                 ? $this->addSvgAttributes(file_get_contents($svgIconsPath . 'profile.svg')) 
                 : '<span class="icon-placeholder">Profile Icon</span>';
 
             $html[] = '<div class="sp-profile-wrapper">';
             $html[] = '<a href="#" class="sp-sign-in">';
-            $html[] = $profileIcon; // Вставка SVG
+            $html[] = $profileIcon;
             $html[] = '<span class="user-text d-none d-xl-inline-block"> ' . ($user->name ?? '') . '</span>';
             $html[] = '<i class="fas fa-chevron-down arrow-icon" aria-hidden="true"></i>';
             $html[] = '</a>';
@@ -157,13 +155,9 @@ class HelixUltimateFeatureMenu
      */
     private function addSvgAttributes($svgContent)
     {
-        // Удаляем существующие атрибуты fill и height
         $svgContent = preg_replace('/\sfill="[^"]*"/', '', $svgContent);
         $svgContent = preg_replace('/\sheight="[^"]*"/', '', $svgContent);
-
-        // Добавляем новые атрибуты
         $svgContent = preg_replace('/<svg\s/', '<svg fill="currentColor" height="1em" ', $svgContent);
-
         return $svgContent;
     }
 }
